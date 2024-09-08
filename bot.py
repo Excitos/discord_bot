@@ -36,6 +36,30 @@ class MusicBot(commands.Cog):
             if not ctx.voice_client:
                 await voice_channel.connect()
 
+            if 'entries' in info:
+                # È una playlist
+                playlist_title = info.get('title', 'Playlist sconosciuta')
+                await ctx.send(f'Aggiunta playlist: **{playlist_title}**')
+                for entry in info['entries']:
+                    url = entry['url']
+                    title = entry['title']
+                    self.queue.append((url, title))
+                    await ctx.send(f'Aggiunto in coda: **{title}**')
+            else:
+                # È un singolo video
+                url = info['url']
+                title = info['title']
+                self.queue.append((url, title))
+                await ctx.send(f'Aggiunto in coda: **{title}**')
+
+            # Se non sta già riproducendo, inizia la riproduzione
+            if not ctx.voice_client.is_playing():
+                await self.play_next(ctx)  
+
+        except Exception as e:
+            print(f"Errore nella riproduzione del brano o della playlist: {e}")
+            await ctx.send("Si è verificato un errore durante l'elaborazione della richiesta.")
+
             async with ctx.typing():
                 # Estrae le informazioni del video da YouTube
                 with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
