@@ -16,7 +16,7 @@ FFMPEG_OPTIONS = {
 }
 
 # Opzioni per youtube-dl (usato per scaricare informazioni sui video)
-YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': True}
+YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': False}
 
 # Definizione della classe MusicBot
 class MusicBot(commands.Cog):
